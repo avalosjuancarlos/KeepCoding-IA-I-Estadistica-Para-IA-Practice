@@ -203,6 +203,32 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 
     ------------------------------------------------------------------------
 
+    ```{r}
+
+    df_madrid_sm_without_0_and_lt20 |> group_by(Neighbourhood) |> 
+      summarise(count = n(), count_na = sum(is.na(Square.Meters)), 
+                all_na = n() == sum(is.na(Square.Meters))) -> df_madrid_neighbourhood_all_na
+
+    df_madrid_neighbourhood_all_na |> filter(all_na == TRUE)
+    ```
+
+    ```{r}
+    df_madrid_neighbourhood_all_na |> filter(all_na == TRUE) |> 
+      select(Neighbourhood) -> df_madrid_neighbourhood_all_na_only_names
+
+    df_madrid_neighbourhood_all_na_only_names
+    ```
+
+    ```{r}
+    df_madrid_sm_without_0_and_lt20 |> filter(!Neighbourhood %in% df_madrid_neighbourhood_all_na_only_names$Neighbourhood) -> df_madrid_without_neighbourhood_with_all_na_sm
+
+    df_madrid_without_neighbourhood_with_all_na_sm
+    ```
+
+    ```{r}
+    df_madrid_without_neighbourhood_with_all_na_sm |> filter(Neighbourhood %in% df_madrid_neighbourhood_all_na_only_names$Neighbourhood)
+    ```
+
 9.  ¿Tienen todos los barrios los mismos metros cuadrados de media? ¿Con que test lo comprobarías?
 
     ------------------------------------------------------------------------
