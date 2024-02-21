@@ -152,6 +152,40 @@ Hay muchos NAs, vamos a intentar crear un modelo que nos prediga cuantos son los
 
 6.  Pinta el histograma de los metros cuadrados y ver si tenemos que filtrar algún elemento más
 
+```{r}
+library(ggplot2)
+```
+
+```{r}
+
+ggplot(data=df_madrid_sm_without_0, aes(x=Square.Meters))+
+  geom_histogram(fill='#7070BB', color='#2020EE', breaks=seq(-2,485, by=1))+
+  geom_boxplot(color='red', width=6, alpha=0.5)+
+  xlab('Square Meters')+scale_y_continuous(name='Cantidad', limits = c(-4,16), breaks = seq(-4, 16, by=2))
+
+```
+
+```{r}
+boxplot(df_madrid_sm_without_0$Square.Meters,  horizontal = TRUE)
+```
+
+```{r}
+quantiles_sm <- quantile(df_madrid_sm_without_0$Square.Meters, na.rm=TRUE)
+quantiles_sm
+q0 <- quantiles_sm[1]
+q1 <- quantiles_sm[2]
+q2 <- quantiles_sm[3]
+q3 <- quantiles_sm[4]
+q4 <- quantiles_sm[5]
+```
+
+```{r}
+cat(paste("La mediana está en",q2, "m^2 y el rango entre Q1-Q3 va de", q1 ,"a",  q3))
+cat(paste("\n\nVemos que tenemos 3 departamentos con 200 m^2 y 1 con 481 m^2"))
+cat(paste("\nTambién vemos que hay departamentos con menos de 10 m^2"))
+cat(paste("\nHabría que ver que se debe hacer. En el caso de los departamentos con más de 200 m^2 se los podría considerar outlayers y eliminarlos."))
+```
+
 ------------------------------------------------------------------------
 
 7.  Asigna el valor NA a la columna Square.Meters de los apartamentos que tengan menos de 20 m\^2
