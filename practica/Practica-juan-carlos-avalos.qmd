@@ -86,6 +86,12 @@ colnames(df_madrid)
 
     Recuerda que un pie cuadrado son 0.092903 metros cuadrados.
 
+```{r}
+df_madrid |> mutate(Square.Metters= Square.Feet * 0.092903) -> df_madrid
+
+df_madrid |> select(Square.Feet, Square.Metters)
+```
+
 ------------------------------------------------------------------------
 
 3.  ¿Que porcentaje de los apartamentos no muestran los metros cuadrados? Es decir, ¿cuantos tienen NA en Square.Meters?
