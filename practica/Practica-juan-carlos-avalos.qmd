@@ -229,9 +229,42 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
     df_madrid_without_neighbourhood_with_all_na_sm |> filter(Neighbourhood %in% df_madrid_neighbourhood_all_na_only_names$Neighbourhood)
     ```
 
+------------------------------------------------------------------------
+
 9.  ¿Tienen todos los barrios los mismos metros cuadrados de media? ¿Con que test lo comprobarías?
 
-    ------------------------------------------------------------------------
+    ```{r}
+    df_madrid_without_neighbourhood_with_all_na_sm |> group_by(Neighbourhood) |> 
+      summarise(mean = mean(Square.Meters, na.rm = TRUE)) -> df_madrid_mean_neighbourhood
+
+    df_madrid_mean_neighbourhood |> arrange(mean)
+    ```
+
+    ```{r}
+    ggplot(data=df_madrid_mean_neighbourhood, aes(x=mean))+
+      geom_histogram(fill='#7070BB', color='#2020EE', breaks=seq(0,300, by=1))+
+      geom_boxplot(color='red', width=3, alpha=0.5)+
+      xlab('MEAN Square Meters')+
+      scale_y_continuous(name='count Neighbourhood', limits = c(-2,4), breaks = seq(-2, 4, by=2))
+    ```
+
+    ```{r}
+    aov( mean ~ Neighbourhood, data=df_madrid_mean_neighbourhood)
+    ```
+
+    ```{r}
+    boxplot(mean ~ Neighbourhood, data=df_madrid_mean_neighbourhood)
+    ```
+
+    ```{r}
+    aov( Square.Meters ~ Neighbourhood, data=df_madrid_without_neighbourhood_with_all_na_sm)
+    ```
+
+    ```{r}
+    cat(paste("Por lo que pudimos ver, las medias NO son similares todas las medias. El test de ANOVA NO nos brinda ningún resultado significado"))
+    ```
+
+------------------------------------------------------------------------
 
 10. Vamos a agrupar los barrios por metros cuadrados. Podemos usar una matriz de similaridad de Tukey. Muestra como de similares o diferentes son los barrios si nos fijámos únicamente en los metros cuadrados de los pisos. ¿Como se diferencia la media del Barrio A al Barrio B? (Es decir, cual sería el pvalor suponiendo una H0 en la que las medias son iguales)
 
