@@ -87,14 +87,30 @@ colnames(df_madrid)
     Recuerda que un pie cuadrado son 0.092903 metros cuadrados.
 
 ```{r}
-df_madrid |> mutate(Square.Metters= Square.Feet * 0.092903) -> df_madrid
+df_madrid |> mutate(Square.Meters= Square.Feet * 0.092903) -> df_madrid
 
-df_madrid |> select(Square.Feet, Square.Metters)
+df_madrid |> select(Square.Feet, Square.Meters)
 ```
 
 ------------------------------------------------------------------------
 
 3.  ¿Que porcentaje de los apartamentos no muestran los metros cuadrados? Es decir, ¿cuantos tienen NA en Square.Meters?
+
+```{r}
+df_madrid |> select(Square.Meters) |> 
+  filter(is.na(Square.Meters)) |> 
+  summarise(Percentage = n() / nrow(df_madrid) * 100, Count = n(), Total = nrow(df_madrid)) ->
+  df_madrid_na_square_meters
+
+total_elements <- df_madrid_na_square_meters$Total
+total_na_sm <- df_madrid_na_square_meters$Count
+percentage_na_sm <- df_madrid_na_square_meters$Percentage
+
+cat(paste("Total de elementos:", total_elements, 
+      "\nTotal de NA en Square.Meters:", total_na_sm,
+      "\nPorcentaje de NA Square.Meters:", percentage_na_sm))
+
+```
 
 ------------------------------------------------------------------------
 
