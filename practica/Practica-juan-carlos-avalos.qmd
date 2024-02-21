@@ -116,6 +116,25 @@ cat(paste("Total de elementos:", total_elements,
 
 4.  De todos los apartamentos que tienen un valor de metros cuadrados diferente de NA ¿Que porcentaje de los apartamentos tienen 0 metros cuadrados?
 
+```{r}
+
+total_not_na_sm <- total_elements - total_na_sm
+
+df_madrid |> select(Square.Meters) |> 
+  filter(!is.na(Square.Meters) & Square.Meters == 0) |> 
+  summarise(Percentage = n() / total_not_na_sm * 100, Count = n(), PercentageTotal = n() / total_elements * 100) ->
+  df_madrid_0_square_meters
+
+total_0_sm <- df_madrid_0_square_meters$Count
+percentage_0_sm <- df_madrid_0_square_meters$Percentage
+percentage_total_0_sm <- df_madrid_0_square_meters$PercentageTotal
+
+cat(paste("Total de NO NA elementos en Square.Meters:", total_not_na_sm, 
+      "\nTotal de 0 en Square.Meters:", total_0_sm,
+      "\nPorcentaje de 0 Square.Meters:", percentage_total_0_sm,
+      "\nPorcentaje de 0 Sin considerar NA en Square.Meters:", percentage_0_sm))
+```
+
 ------------------------------------------------------------------------
 
 5.  Reemplazar todos los 0m\^2 por NA
