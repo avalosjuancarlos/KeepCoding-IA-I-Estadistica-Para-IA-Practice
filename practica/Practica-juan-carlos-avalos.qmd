@@ -14,11 +14,77 @@ airbnb<-read.csv('airbnb-listings.csv',sep = ';')
 options(repr.plot.height=4,repr.plot.width=6,repr.plot.res = 300)
 ```
 
-1.  Vamos a quedarnos con las columnas de mayor interés: 'City','Room.Type','Neighbourhood','Accommodates','Bathrooms','Bedrooms','Beds','Price','Square.Feet','Guests.Included','Extra.People','Review.Scores.Rating','Latitude', 'Longitude' Nos quedarmos solo con las entradas de Madrid para Room.Type=="Entire home/apt" y cuyo barrio (Neighbourhood) no está vacio '' Podemos eliminar las siguientes columnas que ya no son necesarias: "Room.Type",'City' Llama a nuevo dataframe df_madrid.
+1.  Vamos a quedarnos con las columnas de mayor interés: 'City','Room.Type','Neighbourhood','Accommodates','Bathrooms','Bedrooms','Beds','Price','Square.Feet',
+
+    'Guests.Included','Extra.People','Review.Scores.Rating','Latitude', 'Longitude'
+
+    Nos quedarmos solo con las entradas de Madrid para Room.Type=="Entire home/apt" y cuyo barrio (Neighbourhood) no está vacio "''
+
+    Podemos eliminar las siguientes columnas que ya no son necesarias:
+
+    "Room.Type",'City'
+
+    Llama a nuevo dataframe df_madrid.
+
+```{r}
+head(airbnb)
+
+```
+
+```{r}
+str(airbnb)
+
+```
+
+```{r}
+colnames(airbnb)
+
+```
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+# Vamos a quedarnos con las columnas de mayor interés: 
+#'City','Room.Type','Neighbourhood','Accommodates','Bathrooms','Bedrooms','Beds',
+#'Price', 'Square.Feet','Guests.Included','Extra.People','Review.Scores.Rating',
+#'Latitude', 'Longitude'
+airbnb |> select(City, Room.Type, Neighbourhood, Accommodates, Bathrooms, Bedrooms, Beds, 
+                 Price,Square.Feet, Guests.Included, Extra.People, Review.Scores.Rating,
+                 Latitude, Longitude) -> airbnb_selected_columns
+
+colnames(airbnb_selected_columns)
+```
+
+```{r}
+#Nos quedarmos solo con las entradas de Madrid para 
+# Room.Type=="Entire home/apt" 
+# y cuyo barrio (Neighbourhood) no está vacio "'' 
+airbnb_selected_columns |> filter(grepl('Madrid', City, ignore.case = TRUE), 
+                                  Room.Type=="Entire home/apt", 
+                                  Neighbourhood !="") -> airbnb_madrid
+
+airbnb_madrid
+```
+
+```{r}
+#Podemos eliminar las siguientes columnas que ya no son necesarias: 
+
+#"Room.Type",'City' 
+
+#Llama a nuevo dataframe df_madrid.
+airbnb_madrid |> select(-c(Room.Type, City)) -> df_madrid
+
+colnames(df_madrid)
+
+```
 
 ------------------------------------------------------------------------
 
-2.  Crea una nueva columna llamada Square.Meters a partir de Square.Feet. Recuerda que un pie cuadrado son 0.092903 metros cuadrados.
+2.  Crea una nueva columna llamada Square.Meters a partir de Square.Feet.
+
+    Recuerda que un pie cuadrado son 0.092903 metros cuadrados.
 
 ------------------------------------------------------------------------
 
