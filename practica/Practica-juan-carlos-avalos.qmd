@@ -139,6 +139,13 @@ cat(paste("Total de NO NA elementos en Square.Meters:", total_not_na_sm,
 
 5.  Reemplazar todos los 0m\^2 por NA
 
+```{r}
+
+df_madrid |> mutate(Square.Meters = na_if(Square.Meters, 0)) -> df_madrid_sm_without_0
+
+df_madrid_sm_without_0 |> filter(Square.Meters == 0)
+```
+
 ------------------------------------------------------------------------
 
 Hay muchos NAs, vamos a intentar crear un modelo que nos prediga cuantos son los metros cuadrados en función del resto de variables para tratar de rellenar esos NA. Pero **antes de crear el modelo** vamos a hacer: \* pintar el histograma de los metros cuadrados y ver si tenemos que filtrar algún elemento más. \* crear una variable sintética nueva basada en la similitud entre barrios que usaremos en nuestro modelo.
