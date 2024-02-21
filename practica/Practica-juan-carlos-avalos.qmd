@@ -190,6 +190,13 @@ cat(paste("\nHabría que ver que se debe hacer. En el caso de los departamentos 
 
 7.  Asigna el valor NA a la columna Square.Meters de los apartamentos que tengan menos de 20 m\^2
 
+```{r}
+
+df_madrid_sm_without_0 |> mutate(Square.Meters = replace(Square.Meters, Square.Meters < 20, NA)) -> df_madrid_sm_without_0_and_lt20
+
+df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
+```
+
 ------------------------------------------------------------------------
 
 8.  Existen varios Barrios que todas sus entradas de Square.Meters son NA, vamos a eliminar del dataset todos los pisos que pertenecen a estos barrios.
