@@ -351,6 +351,52 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 
 10. ¿Que punto de corte sería el aconsejable?, ¿cuantos clusters aparecen?
 
+    ```{r}
+    cat(paste("podríamos elegir 0.2 como punto de corte y tendríamos 3 clusters"))
+    plot(color_branches(df_madrid.dend, h=0.2), leaflab="none")
+    abline(h = 0.2, col = "red")
+    ```
+
+    ```{r}
+    clusters_3 <- cutree(df_madrid.dend, h=0.2)
+    table(clusters_3)
+    ```
+
+    ```{r}
+    cat(paste("Oh podríamos elegir 0.02 como punto de corte y tendríamos 4 clusters"))
+    plot(color_branches(df_madrid.dend, h=0.02), leaflab="none")
+    abline(h = 0.02, col = "red")
+    ```
+
+    ```{r}
+    clusters_4 <- cutree(df_madrid.dend, h=0.02)
+    table(clusters_4)
+    ```
+
+    ```{r}
+    cat(paste("Si elegimos 0.5 como punto de corte y tendríamos 2 clusters"))
+    plot(color_branches(df_madrid.dend, h=0.5), leaflab="none")
+    abline(h = 0.5, col = "red")
+    ```
+
+    ```{r}
+    clusters_2 <- cutree(df_madrid.dend, h=0.5)
+    table(clusters_2)
+    ```
+
+    ```{r}
+    cat(paste("Como podemos ver si elegimos tener solo 2 cluster queda muy desbalanceado."))
+    cat(paste("\nYa que el primer cluster contiene una excesiva cantidad de elementos 36 vs 2 del restante"))
+    cat(paste("\n\nSi creamos 3 clusters queda mejor balanceado."))
+    cat(paste("\nEl primer cluster tendra 28 elementos, el segundo 8 y el tercero tan solo 2 elementos"))
+    cat(paste("\n\nSi creamos 4 clusters el balanceo no difiere mucho del de 3 clusters."))
+    cat(paste("\nNotamos que el segundo cluster pierde un elemento, pasando a tener 7 y el cluster 4 a tener 1 elemento"))
+    ```
+
+    ```{r}
+    cat(paste("Para trabajar vamos a usar el corte en 0.5 obteniendo 4 clusters"))
+    ```
+
 ------------------------------------------------------------------------
 
 11. Vamos a crear una nueva columna en el dataframe df_madrid con un nuevo identificador marcado por los clusters obtenidos. Esta columna la llamaremos neighb_id
