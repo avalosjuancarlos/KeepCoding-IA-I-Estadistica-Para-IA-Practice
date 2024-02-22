@@ -401,6 +401,26 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 
 11. Vamos a crear una nueva columna en el dataframe df_madrid con un nuevo identificador marcado por los clusters obtenidos. Esta columna la llamaremos neighb_id
 
+    ```{r}
+    clusters_4.dataframe <- data.frame(Neighbourhood=names(clusters_4), 
+                                     neighb_id=clusters_4, row.names = NULL)
+      
+    clusters_4.dataframe
+    ```
+
+    ```{r}
+    clusters_4.dataframe$neighb_id <- factor(clusters_4.dataframe$neighb_id)
+    str(clusters_4.dataframe)
+    ```
+
+    ```{r}
+
+    df_madrid_with_neighb_id <- merge(clusters_4.dataframe, df_madrid_without_neighbourhood_with_all_na_sm)
+
+    str(df_madrid_with_neighb_id)
+
+    ```
+
 ------------------------------------------------------------------------
 
 12. Vamos a crear dos grupos, uno test y otro train.
