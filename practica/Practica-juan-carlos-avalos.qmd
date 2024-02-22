@@ -425,6 +425,19 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 
 12. Vamos a crear dos grupos, uno test y otro train.
 
+    ```{r}
+    set.seed(0)
+    num_train=round(0.7*nrow(df_madrid_with_neighb_id))
+    train_ind<-sample(1:nrow(df_madrid_with_neighb_id),size = num_train)
+
+    df_madrid_with_neighb_id.train=df_madrid_with_neighb_id[train_ind,]
+    df_madrid_with_neighb_id.test =df_madrid_with_neighb_id[-train_ind,]
+
+    summary(df_madrid_with_neighb_id.train)
+    summary(df_madrid_with_neighb_id.test)
+
+    ```
+
 ------------------------------------------------------------------------
 
 13. Tratamos de predecir los metros cuadrados en función del resto de columnas del dataframe.
