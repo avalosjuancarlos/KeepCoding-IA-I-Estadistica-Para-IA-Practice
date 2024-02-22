@@ -442,6 +442,29 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 
 13. Tratamos de predecir los metros cuadrados en función del resto de columnas del dataframe.
 
+    ```{r}
+    modellm<-lm(data=df_madrid_with_neighb_id.train,
+                formula=Square.Meters~.)
+    summary(modellm)
+    ```
+
+    ```{r}
+    cat(paste("Por lo que puede ver el modelo NO ajusta bien."))
+    cat(paste("\nSquare.Feet consigue '***' pero es similar a Square.Meters, con lo cual no nos sirve para predecir"))
+    cat(paste("\nDel resto, solo Bedrooms consigue '*' y es la única que podríamos llegar a considerar para optimizar el modelo"))
+    ```
+
+    ```{r}
+    modellm<-lm(data=df_madrid_with_neighb_id.train,
+                formula=Square.Meters~Bedrooms)
+    summary(modellm)
+    ```
+
+    ```{r}
+    p <- predict(modellm, df_madrid_with_neighb_id.test, type="response")
+    p
+    ```
+
 ------------------------------------------------------------------------
 
 14. Evaluar la calidad de vuestro modelo
