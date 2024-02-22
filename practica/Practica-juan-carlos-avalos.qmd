@@ -249,19 +249,21 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
     ```
 
     ```{r}
-    aov( mean ~ Neighbourhood, data=df_madrid_mean_neighbourhood)
+    result_shapiro_test <- shapiro.test(df_madrid_mean_neighbourhood$mean)
+    result_shapiro_test
     ```
 
     ```{r}
-    boxplot(mean ~ Neighbourhood, data=df_madrid_mean_neighbourhood)
+    cat(paste("El test de shapiro nos indica que NO es un distribución NORMAL"))
+    cat(paste("\nEs un valor muy cercano a cero el p-value:", result_shapiro_test$p.value
     ```
 
     ```{r}
-    aov( Square.Meters ~ Neighbourhood, data=df_madrid_without_neighbourhood_with_all_na_sm)
+    cat(paste("Como NO es una distribución NORMAL no podemos usar el test de ANOVA y usaremos Kruskal-Wallis"))
     ```
 
     ```{r}
-    cat(paste("Por lo que pudimos ver, las medias NO son similares todas las medias. El test de ANOVA NO nos brinda ningún resultado significado"))
+    kruskal.test( mean ~ Neighbourhood, data=df_madrid_mean_neighbourhood)
     ```
 
 ------------------------------------------------------------------------
