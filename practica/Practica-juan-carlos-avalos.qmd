@@ -298,6 +298,55 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 
 11. En el punto anterior has creado una matriz de p-valores que indica como de parecidos son dos barrios. Si su pvalor es alto significa que los barrios son diferentes, si es bajo significa que los barrios se parecen. Esta matriz la podemos usar como matriz de distancia si restamos el pvalor a 1. Es decir si usamos como distancia 1-pvalor. De esta forma barrios con un pvalor alto tendrán una distancia mayor que aquellos con un pvalor bajo. Usando esta última métrica como matriz de distancias dibuja un dendrograma de los diferentes barrios.
 
+    ```{r}
+    df_madrid.dist <- as.dist(1 - resm)
+
+    str(df_madrid.dist)
+    ```
+
+    ```{r}
+    df_madrid.tree <- hclust(df_madrid.dist, method = "complete")
+    df_madrid.dend <- as.dendrogram(df_madrid.tree)
+    ```
+
+    ```{r}
+    library(dendextend)
+
+    clusters <- cutree(df_madrid.dend, k=4)
+    plot(color_branches(df_madrid.dend, k=4), leaflab="none")
+    ```
+
+    ```{r}
+    length(unique(clusters))
+    ```
+
+    ```{r}
+    table(clusters)
+    ```
+
+    ```{r fig.height=8, fig.width=6}
+    library(cluster)
+    ss<-silhouette(clusters, df_madrid.dist)
+    plot(ss,col=1:max(clusters),border=NA)
+
+    ```
+
+    ```{r}
+    names(clusters[clusters==1])
+    ```
+
+    ```{r}
+    clusters.dataframe <- data.frame(Neighbourhood=names(clusters), 
+                                     num_cluster=clusters, row.names = NULL)
+      
+    clusters.dataframe
+    ```
+
+    ```{r}
+    clusters.dataframe$num_cluster <- factor(clusters.dataframe$num_cluster)
+    str(clusters.dataframe)
+    ```
+
 ------------------------------------------------------------------------
 
 10. ¿Que punto de corte sería el aconsejable?, ¿cuantos clusters aparecen?
