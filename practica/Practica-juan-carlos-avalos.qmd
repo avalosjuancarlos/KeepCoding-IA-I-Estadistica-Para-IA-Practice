@@ -255,7 +255,7 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 
     ```{r}
     cat(paste("El test de shapiro nos indica que NO es un distribución NORMAL"))
-    cat(paste("\nEs un valor muy cercano a cero el p-value:", result_shapiro_test$p.value
+    cat(paste("\nEs un valor muy cercano a cero el p-value:", result_shapiro_test$p.value))
     ```
 
     ```{r}
@@ -269,6 +269,30 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 ------------------------------------------------------------------------
 
 10. Vamos a agrupar los barrios por metros cuadrados. Podemos usar una matriz de similaridad de Tukey. Muestra como de similares o diferentes son los barrios si nos fijámos únicamente en los metros cuadrados de los pisos. ¿Como se diferencia la media del Barrio A al Barrio B? (Es decir, cual sería el pvalor suponiendo una H0 en la que las medias son iguales)
+
+    ```{r}
+    tky <- TukeyHSD(aov( Square.Meters ~ Neighbourhood, data=df_madrid_without_neighbourhood_with_all_na_sm))
+
+    tky.result<-data.frame(tky$Neighbourhood)
+    cn <-sort(unique(df_madrid_without_neighbourhood_with_all_na_sm$Neighbourhood))
+    resm <- matrix(NA, length(cn),length(cn))
+    rownames(resm) <- cn
+    colnames(resm) <- cn
+    resm[lower.tri(resm) ] <- round(tky.result$p.adj,4)
+    resm[upper.tri(resm) ] <- t(resm)[upper.tri(resm)] 
+    diag(resm) <- 1
+
+    library(ggplot2)
+    library(reshape2)
+
+    dfResm <- melt(resm)
+    ggplot(dfResm, aes(x=Var1, y=Var2, fill=value))+
+      geom_tile(colour = "black")+
+      geom_text(aes(label=paste(round(value*100,0),"%")),size = 3) +
+      scale_fill_gradient(low = "white",high = "steelblue")+
+      ylab("Class")+xlab("Class")+theme_bw()+
+      theme(axis.text.x = element_text(angle = 90, hjust = 1),legend.position="none")
+    ```
 
 ------------------------------------------------------------------------
 
