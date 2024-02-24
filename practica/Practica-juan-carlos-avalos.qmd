@@ -469,6 +469,75 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 
 14. Evaluar la calidad de vuestro modelo
 
+    ```{r}
+    p <- predict(modellm, na.omit(df_madrid_with_neighb_id.test), type="response")
+
+    cat(paste("SUMMARY PREDICT type RESPONSE\n"))
+    summary(p)
+    cat(paste("\n\nCONFINT\n"))
+    confint(modellm)
+    ```
+
+    ```{r}
+    hist(modellm$residual)
+    ```
+
+    ```{r}
+    qqnorm(modellm$residual)
+    qqline(modellm$residual,col='orange')
+    ```
+
+    ```{r}
+    ddf_madrid_with_neighb_id_rl_pred_conf_conf <- data.frame(
+      predict(modellm, na.omit(df_madrid_with_neighb_id.test), interval='confidence', level=0.9)) %>% 
+      rename_all( ~ paste0("conf_", .x))
+
+    ddf_madrid_with_neighb_id_rl_pred_conf_pred<-data.frame(
+      predict(modellm, na.omit(df_madrid_with_neighb_id.test), interval='prediction', level=0.9)) %>% 
+      rename_all( ~ paste0("pred_", .x))
+
+    df_pred = cbind(ddf_madrid_with_neighb_id_rl_pred_conf_conf,
+                    ddf_madrid_with_neighb_id_rl_pred_conf_pred,
+                    na.omit(df_madrid_with_neighb_id.test))
+
+    ggplot(df_pred,aes(x=Bedrooms))+geom_point(aes(y=Square.Meters))+
+      geom_line(aes(y=conf_fit,color='Media'))+
+      geom_line(aes(y=conf_upr,color='confidence'))+
+      geom_line(aes(y=conf_lwr,color='confidence'))+
+      geom_line(aes(y=pred_upr,color='prediction'))+
+      geom_line(aes(y=pred_lwr,color='prediction'))+
+      scale_color_discrete(name = "Predicciones", labels = c("confidence","media","prediction"))+theme_bw()
+    ```
+
+    ```{r}
+    df_madrid_with_neighb_id_pred <- predict(modellm , df_madrid_with_neighb_id.test)
+    caret_with_all_test_data = caret::postResample(df_madrid_with_neighb_id_pred, df_madrid_with_neighb_id.test$Square.Meters)
+
+    caret_with_all_test_data
+    ```
+
+    ```{r}
+    caret_without_na = caret::postResample(df_madrid_with_neighb_id_pred, na.omit(df_madrid_with_neighb_id.test$Square.Meters))
+
+    caret_without_na
+    ```
+
+    ```{r}
+    p <- predict(modellm, na.omit(df_madrid_with_neighb_id.test), type="response")
+
+    caret_p_without_na = caret::postResample(p, na.omit(df_madrid_with_neighb_id.test$Square.Meters))
+
+    caret_p_without_na
+    ```
+
+    ```{r}
+    cat(paste("Por lo que vemos cuando ejecutamos postResample:"))
+    cat(paste("\nCuando la predicción se genera sin utilizar type='response' solo obtenemos Rsquared "))
+    cat(paste("\nCuando la predicción se genera utilizando type='response' NO obtenemos Rsquared "))
+    cat(paste("\nSi omitimos los nulos el Rsquared es de 0.01531252, con lo cual podríamos creer que el modelo tiene una BUENA CALIDAD, pero NO lo podemos CONFIRMAR"))
+
+    ```
+
 ------------------------------------------------------------------------
 
 15. Si tuvieramos un anuncio de un apartamento para 6 personas (Accommodates), con 1 baño, con un precio de 80€/noche y 3 habitaciones en el barrio de Sol, con 3 camas y un review de 80. ¿Cuantos metros cuadrados tendría? Si tu modelo necesita algúna variable adicional puedes inventartela dentro del rango de valores del dataset. ¿Como varía sus metros cuadrados con cada habitación adicional?
