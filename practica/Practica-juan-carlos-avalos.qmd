@@ -542,6 +542,53 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
 
 15. Si tuvieramos un anuncio de un apartamento para 6 personas (Accommodates), con 1 baño, con un precio de 80€/noche y 3 habitaciones en el barrio de Sol, con 3 camas y un review de 80. ¿Cuantos metros cuadrados tendría? Si tu modelo necesita algúna variable adicional puedes inventartela dentro del rango de valores del dataset. ¿Como varía sus metros cuadrados con cada habitación adicional?
 
+    ```{r}
+    appartment <- data.frame(Accommodates=6, 
+                             Bathrooms=1.0, 
+                             Price=80,  
+                             Bedrooms=3,
+                             Neighbourhood= "Sol",
+                             Beds=3,
+                             Review.Scores.Rating=80)
+
+
+    appartment |> select(Bedrooms) ->bedrooms_data_frame
+
+    appartment.pred <- predict(modellm, bedrooms_data_frame)
+
+    appartment.pred
+    ```
+
+    ```{r}
+    cat(paste("Para 3 habitaciones los Square.Meters serían:", appartment.pred))
+    ```
+
+    ```{r}
+    more_bedrooms_data_frame = data.frame(Bedrooms=4:5)
+    appartment_more_bedrooms.pred <- predict(modellm, more_bedrooms_data_frame)
+
+    appartment_more_bedrooms.pred
+    ```
+
+    ```{r}
+    cat(paste("Para 4 habitaciones los Square.Meters serían:", appartment_more_bedrooms.pred[1]))
+    cat(paste("\nPara 5 habitaciones los Square.Meters serían:", appartment_more_bedrooms.pred[2]))
+    cat(paste("\nLa variación de Square.Meters entre 3 y 4 habitaciones es:", 
+              appartment_more_bedrooms.pred[1] - appartment.pred))
+    cat(paste("\nLa variación de Square.Meters entre 4 y 5 habitaciones es:", 
+              appartment_more_bedrooms.pred[2] - appartment_more_bedrooms.pred[1]))
+    ```
+
+    ```{r}
+    modellm$coefficients[2]
+    ```
+
+    ```{r}
+    cat(paste("Con esto comprobamos que el coeficiente que calculo el modelo y nuestros calculos  son los mismos"))
+    cat(paste("\nEn nuestro caso es simple, ya que al armar el modelo solo utilizamos Bedrooms."))
+    cat(paste("\nSi nuestro modelo sería más complejo debereiamos considerar mas coeficientes."))
+    ```
+
 ------------------------------------------------------------------------
 
 16. Rellenar los Square.Meters con valor NA con el estimado con el modelo anterior.
