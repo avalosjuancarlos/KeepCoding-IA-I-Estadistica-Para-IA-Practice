@@ -586,12 +586,44 @@ df_madrid_sm_without_0_and_lt20 |> filter(Square.Meters < 20)
     ```{r}
     cat(paste("Con esto comprobamos que el coeficiente que calculo el modelo y nuestros calculos  son los mismos"))
     cat(paste("\nEn nuestro caso es simple, ya que al armar el modelo solo utilizamos Bedrooms."))
-    cat(paste("\nSi nuestro modelo sería más complejo debereiamos considerar mas coeficientes."))
+    cat(paste("\nSi nuestro modelo sería más complejo deberiamos considerar mas coeficientes."))
     ```
 
 ------------------------------------------------------------------------
 
 16. Rellenar los Square.Meters con valor NA con el estimado con el modelo anterior.
+
+    ```{r}
+    unique_bedrooms <- unique(df_madrid_with_neighb_id$Bedrooms)
+    unique_bedrooms
+    ```
+
+    ```{r}
+
+    appartment_all_bedrooms.pred <- data.frame(Bedrooms = c(0:10),
+                                               Square.Meters = predict(modellm, data.frame(Bedrooms=0:10)))
+
+
+    appartment_all_bedrooms.pred
+    ```
+
+    ```{r}
+    rows_patch(df_madrid_with_neighb_id, appartment_all_bedrooms.pred, by = c("Bedrooms"), unmatched = 'ignore') -> df_madrid_with_neighb_id_and_sm
+
+    str(df_madrid_with_neighb_id_and_sm)
+    ```
+
+    ```{r}
+    df_madrid_with_neighb_id_and_sm |> filter(is.na(Square.Meters))
+    ```
+
+    ```{r}
+    cat(paste("Como no pudimos completar todos los Square.Meters vamos a eliminar los que quedaron con NA \n\n"))
+
+    df_madrid_with_neighb_id_and_sm |> filter(!is.na(Square.Meters)) -> df_madrid_with_neighb_id_and_sm 
+
+    str(df_madrid_with_neighb_id_and_sm)
+    ```
 
 ------------------------------------------------------------------------
 
