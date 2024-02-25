@@ -633,4 +633,83 @@ Crearemos una función tal que le pasemos un apartamento con los siguientes dato
 
 y nos devuelva los 5 más similares de:
 
+```{r}
+str(df_madrid_with_neighb_id_and_sm)
+```
+
+```{r}
+df_madrid_with_neighb_id_and_sm -> cap_df_madrid
+str(cap_df_madrid)
+cap_df_madrid$Neighbourhood <- NULL
+cap_df_madrid$Square.Feet <- NULL
+cap_df_madrid$neighb_id <- NULL
+str(cap_df_madrid)
+```
+
+```{r}
+#Utilizamos prcomp para calcular el pca
+prdata<-prcomp(na.omit(cap_df_madrid),center = FALSE, scale = FALSE)
+#Comprobamos que los dos primeros autovalores contienen aproximadamente el 90% de la varianza
+plot(prdata$sdev^2/sum(prdata$sdev^2),main="Autovalores")
+```
+
+```{r}
+sum(prdata$sdev[1:2]^2)/sum(prdata$sdev^2)
+```
+
+```{r}
+cat(paste("Si utilizamos 2 componentes principales obtenemos 0.97 de la información"))
+```
+
+```{r}
+prdata$rotation[,1:2]
+```
+
+```{r}
+#Crearemos una función tal que le pasemos un apartamento con los siguientes datos: 
+# Accommodates, Bathrooms, Bedrooms, Beds, Price, Guests.Included, Extra.People,
+# Review.Scores.Rating, Latitude, Longitude, Square.Meters
+# y nos devuelva los 5 más similares de:
+
+predict_pca <- function(number_of_pca,
+                        Accommodates, Bathrooms, Bedrooms, Beds, 
+                        Price, Guests.Included, Extra.People,
+                        Review.Scores.Rating, Latitude, Longitude, 
+                        Square.Meters) {
+  
+  Apc<-prdata$x[,1:number_of_pca]
+
+  df_appartment<-data.frame(Accommodates, Bathrooms, Bedrooms, Beds, 
+                        Price, Guests.Included, Extra.People,
+                        Review.Scores.Rating, Latitude, Longitude, 
+                        Square.Meters)
+
+  t_appartment<-predict(prdata, newdata = as.matrix(df_appartment, nrow=1))[1:number_of_pca]
+  t_appartment<-matrix(t_appartment,nrow=1)
+        
+  dist<-rowSums((t_appartment[rep(1, times = nrow(Apc)), ]-Apc)^2)    
+
+  #podemos mostrar los resultados con todos los campos
+  #df_madrid_with_neighb_id_and_sm[order(dist)[1:5],]
+  
+  # O solo mostrar los campos utilizados para el PCA
+  cap_df_madrid[order(dist)[1:5],]
+}
+
+
+
+appartemnts_predict_pca <- predict_pca(5, 
+            Accommodates = 2, Bathrooms = 1, Bedrooms = 1, Beds = 1,
+            Price = 62, Guests.Included = 0, Extra.People = 0,
+            Review.Scores.Rating = 95, Latitude = 40.3509, Longitude = -3.6815,
+            Square.Meters = 49.98)
+
+cat(paste("Resultados de la predicción:\n\n"))
+str(appartemnts_predict_pca)
+cat(paste("\n\n"))
+summary(appartemnts_predict_pca)
+cat(paste("\n\n"))
+appartemnts_predict_pca
+```
+
 ------------------------------------------------------------------------
